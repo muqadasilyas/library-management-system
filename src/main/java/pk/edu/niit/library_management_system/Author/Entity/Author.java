@@ -9,9 +9,9 @@ import lombok.Data;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long author_id;
+    private long authorId;
     @Column
-    private String author_name;
+    private String authorName;
     @Column
     private String bio;
 

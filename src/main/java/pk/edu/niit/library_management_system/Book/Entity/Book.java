@@ -10,7 +10,7 @@ import pk.edu.niit.library_management_system.Author.Entity.Author;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long bookid;
+    private long bookId;
     @Column
     private String title;
     @Column
@@ -20,7 +20,7 @@ public class Book {
     @Column
     private int availableCopies;
     @ManyToOne
-    @JoinColumn(name="author_id")
+    @JoinColumn(name="authorId")
     private Author author;
 
 }
