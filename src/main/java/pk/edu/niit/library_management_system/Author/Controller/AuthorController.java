@@ -54,6 +54,11 @@ public class AuthorController {
     public ResponseEntity<?> deleteAuthor(@PathVariable long id)
     {
         try{
+            Author author=authorServices.getAuthorById(id);
+            if (author==null)
+            {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Author not found for this id");
+            }
             authorServices.deleteAuthor(id);
             log.info("DELETE/author/id/{}: Author deleted",id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
