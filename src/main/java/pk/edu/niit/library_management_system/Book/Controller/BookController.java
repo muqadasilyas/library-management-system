@@ -38,7 +38,7 @@ public class BookController {
         try{
             Book created=bookServices.createBook(book);
             log.info("POST/book : Book created for this id :{}",created.getBookId());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
         }
         catch (Exception e)
         {
@@ -98,7 +98,7 @@ public class BookController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
             log.info("GET/id/{}: Book found for this id {}",id);
-            return ResponseEntity.status(HttpStatus.FOUND).build();
+            return ResponseEntity.status(HttpStatus.FOUND).body(book);
         }
         catch (Exception e)
         {
