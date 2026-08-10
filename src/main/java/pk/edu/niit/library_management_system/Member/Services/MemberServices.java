@@ -44,4 +44,15 @@ public class MemberServices {
         }
         return null;
     }
+
+    public Member getMemberById(long id)
+    {
+        Optional<Member> existing=memberRepository.findById(id);
+        if(existing.isPresent())
+        {
+            Member member=existing.get();
+            return member;
+        }
+        return null;
+    }
 }
