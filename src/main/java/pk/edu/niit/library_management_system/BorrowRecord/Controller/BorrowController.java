@@ -113,9 +113,14 @@ public class BorrowController {
     public ResponseEntity<?> returnBook(@PathVariable long id)
     {
         try{
-            borrowServices.returnBook(id);
+            BorrowRecord record=borrowServices.returnBook(id);
+            if (record==null)
+            {
+                log.error("Book not fond for this id:{}",id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
             log.info("PUT/id/{}/return : Book returned",id);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.OK).body(record);
         }
         catch (Exception e)
         {
