@@ -69,7 +69,7 @@ public class MemberController {
         }
     }
 
-    @PutMapping("member/id/{id}")
+    @PutMapping("id/{id}")
     public ResponseEntity<Member> updateMember(@PathVariable long id, @RequestBody Member member)
     {
         try{
