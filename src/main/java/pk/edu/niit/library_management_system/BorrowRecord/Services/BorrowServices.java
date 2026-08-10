@@ -25,7 +25,7 @@ public class BorrowServices {
         return borrowRepository.save(borrowRecord);
     }
 
-    public void deleteBook(long id)
+    public void deleteBorrowRecord(long id)
     {
         borrowRepository.deleteById(id);
     }

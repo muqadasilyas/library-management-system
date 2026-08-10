@@ -7,4 +7,5 @@ import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 @Repository
 public interface BorrowRepository extends JpaRepository<BorrowRecord,Long> {
 
+
 }
