@@ -44,11 +44,7 @@ public class BorrowController {
                 log.error("POST/borrowrecord: Invalid book : ");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            if(created.getBook().getAvailableCopies()<=0)
-            {
-                log.error("Books not available to be borrowed");
-                return ResponseEntity.status(HttpStatus.CONFLICT).build();
-            }
+
             log.info("POST/borrowrecord: Borrow record created with this id: {}",created.getBorrowId());
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         }
