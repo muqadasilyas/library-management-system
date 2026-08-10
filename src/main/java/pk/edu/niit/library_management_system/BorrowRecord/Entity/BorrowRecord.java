@@ -24,10 +24,10 @@ public class BorrowRecord {
     @Enumerated(EnumType.STRING)
     @Column
     private Statuses status;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "bookId")
     private Book book;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
 

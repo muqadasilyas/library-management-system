@@ -40,7 +40,7 @@ public class BorrowController {
         try{
             BorrowRecord created=borrowServices.createBorrowRecord(borrowRecord);
             log.info("POST/borrowrecord: Borrow record created with this id: {}",created.getBorrowId());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
         }
         catch (Exception e)
         {
@@ -105,6 +105,21 @@ public class BorrowController {
         catch (Exception e)
         {
             log.error("Error getting book for this id {} :",id,e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("id/{id}/return")
+    public ResponseEntity<?> returnBook(@PathVariable long id)
+    {
+        try{
+            borrowServices.returnBook(id);
+            log.info("PUT/id/{}/return : Book returned",id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        catch (Exception e)
+        {
+            log.error("Error returning book : ",e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
