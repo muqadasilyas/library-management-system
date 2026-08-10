@@ -24,6 +24,12 @@ public class AuthorController {
     {
         try{
             List<Author> authors=authorServices.getAllAuthors();
+            if(authors==null)
+            {
+                log.error("Get/author: Books not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+            }
             log.info("Get/author: All authors found");
             return ResponseEntity.ok(authors);
 
@@ -94,6 +100,11 @@ public class AuthorController {
     {
         try{
             Author author=authorServices.getAuthorById(id);
+            if(author==null)
+            {
+                log.error("Get/author/id/{}: Author not found for this id : {}",id);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
             log.info("GET/author/id/{} :Author found :",id);
             return ResponseEntity.ok(author);
         }

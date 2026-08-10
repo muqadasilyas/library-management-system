@@ -8,6 +8,8 @@ import pk.edu.niit.library_management_system.Book.Repository.BookRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 import pk.edu.niit.library_management_system.BorrowRecord.Repository.BorrowRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Util.Statuses;
+import pk.edu.niit.library_management_system.Member.Entity.Member;
+import pk.edu.niit.library_management_system.Member.Repository.MemberRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,6 +22,8 @@ public class BorrowServices {
     private BorrowRepository borrowRepository;
     @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
     public List<BorrowRecord> getAllBorrowRecords()
     {
@@ -34,6 +38,12 @@ public class BorrowServices {
         {
             return null;
         }
+        Long memberID=borrowRecord.getMember().getMemberId();
+        Optional<Member> existingMember=memberRepository.findById(memberID);
+        if(existingMember.isEmpty())
+        {
+            return null;
+        }
         Book book=existing.get();
         if(book.getAvailableCopies()<=0)
         {
@@ -42,6 +52,7 @@ public class BorrowServices {
         book.setAvailableCopies(book.getAvailableCopies()-1);
         bookRepository.save(book);
         borrowRecord.setBook(book);
+        borrowRecord.setMember(existingMember.get());
         borrowRecord.setStatus(Statuses.BORROWED);
         return borrowRepository.save(borrowRecord);
     }
