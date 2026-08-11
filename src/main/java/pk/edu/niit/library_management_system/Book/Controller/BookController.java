@@ -64,21 +64,11 @@ public class BookController {
     @GetMapping("id/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable long id)
     {
-        try{
             Book book=bookServices.getBookByID(id);
-            if(book==null)
-            {
-                log.info("Book not found for this id : {}",id);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+
             log.info("GET/id/{}: Book found for this id {}",id);
             return ResponseEntity.status(HttpStatus.FOUND).body(book);
-        }
-        catch (Exception e)
-        {
-            log.error("Error getting book : {}",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
 }
