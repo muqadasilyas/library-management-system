@@ -18,4 +18,10 @@ public class GlobalExceptionHandler {
     {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(BorrowRecordNotFoundException.class)
+    public ResponseEntity<String> handleBorrowRecordNotFound(BorrowRecordNotFoundException e)
+    {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

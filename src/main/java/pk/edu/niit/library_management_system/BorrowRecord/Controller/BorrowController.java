@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 import pk.edu.niit.library_management_system.BorrowRecord.Services.BorrowServices;
+import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +23,16 @@ public class BorrowController {
     @GetMapping
     public ResponseEntity<List<BorrowRecord>> getAll()
     {
-        try{
             List<BorrowRecord> records=borrowServices.getAllBorrowRecords();
+            if(records==null)
+            {
+                throw new BorrowRecordNotFoundException(
+                        "GET/borrowrecord: Borrow records not found"
+                );
+            }
             log.info("GET/borrowrecord : {} Borrow Records found",records.size());
             return ResponseEntity.ok(records);
-        }
-        catch (Exception e)
-        {
-            log.error("Error getting all borrow records: ",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @PostMapping

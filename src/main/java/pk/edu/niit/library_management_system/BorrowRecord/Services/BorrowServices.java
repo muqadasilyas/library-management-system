@@ -8,6 +8,8 @@ import pk.edu.niit.library_management_system.Book.Repository.BookRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 import pk.edu.niit.library_management_system.BorrowRecord.Repository.BorrowRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Util.Statuses;
+import pk.edu.niit.library_management_system.ExceptionHandler.BookNotFoundException;
+import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
 import pk.edu.niit.library_management_system.Member.Repository.MemberRepository;
 
@@ -36,7 +38,7 @@ public class BorrowServices {
         Optional<Book> existing= bookRepository.findById(bookId);
         if(existing.isEmpty())
         {
-            return null;
+            throw new BookNotFoundException("Book not found for this borrow record: "+ borrowRecord);
         }
         Long memberID=borrowRecord.getMember().getMemberId();
         Optional<Member> existingMember=memberRepository.findById(memberID);
@@ -47,7 +49,7 @@ public class BorrowServices {
         Book book=existing.get();
         if(book.getAvailableCopies()<=0)
         {
-            return null;
+            throw new BookNotFoundException("Book not available to be borrowed for id: "+ bookId);
         }
         book.setAvailableCopies(book.getAvailableCopies()-1);
         bookRepository.save(book);
@@ -59,56 +61,53 @@ public class BorrowServices {
 
     public void deleteBorrowRecord(long id)
     {
+        if(!borrowRepository.existsById(id))
+        {
+            throw new BorrowRecordNotFoundException("Record not found for id: "+id);
+        }
         borrowRepository.deleteById(id);
     }
 
     public BorrowRecord updateRecord(long id, BorrowRecord borrowRecord)
     {
-        Optional<BorrowRecord> existingRecord=borrowRepository.findById(id);
-        if(existingRecord.isPresent())
-        {
-            BorrowRecord updated=existingRecord.get();
-            updated.setBook(borrowRecord.getBook());
-            updated.setBorrowDate(borrowRecord.getBorrowDate());
-            updated.setMember(borrowRecord.getMember());
-            updated.setStatus(borrowRecord.getStatus());
-            updated.setDueDate(borrowRecord.getDueDate());
-            updated.setReturnDate(borrowRecord.getReturnDate());
-            return borrowRepository.save(updated);
-        }
-        return null;
+       BorrowRecord existingRecord=borrowRepository.findById(id).orElseThrow(()->
+               new BorrowRecordNotFoundException("Record not found for id: "+id));
+            existingRecord.setBook(borrowRecord.getBook());
+            existingRecord.setBorrowDate(borrowRecord.getBorrowDate());
+            existingRecord.setMember(borrowRecord.getMember());
+            existingRecord.setStatus(borrowRecord.getStatus());
+            existingRecord.setDueDate(borrowRecord.getDueDate());
+            existingRecord.setReturnDate(borrowRecord.getReturnDate());
+            return borrowRepository.save(existingRecord);
+
     }
 
     public BorrowRecord getRecordById(long id)
     {
 
-        Optional<BorrowRecord> existingRecord= borrowRepository.findById(id);
-        if(existingRecord.isPresent())
-        {
-            BorrowRecord record=existingRecord.get();
-            return record;
-        }
-        return null;
+        BorrowRecord existingRecord= borrowRepository.findById(id).orElseThrow(()->
+                new BorrowRecordNotFoundException("Record not found for id : "+id));
+
+
+        return existingRecord;
+
     }
 
     public BorrowRecord returnBook(long id)
     {
-        Optional<BorrowRecord> existing=borrowRepository.findById(id);
-        if(existing.isEmpty())
+        BorrowRecord existing=borrowRepository.findById(id).orElseThrow(()->
+                new BorrowRecordNotFoundException("Record not found for id: "+id));
+
+        if(existing.getStatus()==Statuses.RETURNED)
         {
-            return null;
+            return existing;
         }
-        BorrowRecord record=existing.get();
-        if(record.getStatus()==Statuses.RETURNED)
-        {
-            return record;
-        }
-        Book book=record.getBook();
+        Book book=existing.getBook();
         book.setAvailableCopies(book.getAvailableCopies()+1);
         bookRepository.save(book);
 
-        record.setStatus(Statuses.RETURNED);
-        record.setReturnDate(LocalDate.now());
-        return borrowRepository.save(record);
+        existing.setStatus(Statuses.RETURNED);
+        existing.setReturnDate(LocalDate.now());
+        return borrowRepository.save(existing);
     }
 }
