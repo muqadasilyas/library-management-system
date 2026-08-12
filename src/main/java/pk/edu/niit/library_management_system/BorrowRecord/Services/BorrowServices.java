@@ -10,6 +10,7 @@ import pk.edu.niit.library_management_system.BorrowRecord.Repository.BorrowRepos
 import pk.edu.niit.library_management_system.BorrowRecord.Util.Statuses;
 import pk.edu.niit.library_management_system.ExceptionHandler.BookNotFoundException;
 import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
+import pk.edu.niit.library_management_system.ExceptionHandler.MemberNotFoundException;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
 import pk.edu.niit.library_management_system.Member.Repository.MemberRepository;
 
@@ -44,7 +45,7 @@ public class BorrowServices {
         Optional<Member> existingMember=memberRepository.findById(memberID);
         if(existingMember.isEmpty())
         {
-            return null;
+            throw new MemberNotFoundException("Member not found for this borrow record: "+borrowRecord);
         }
         Book book=existing.get();
         if(book.getAvailableCopies()<=0)

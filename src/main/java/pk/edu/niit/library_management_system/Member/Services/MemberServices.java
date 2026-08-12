@@ -4,6 +4,7 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
+import pk.edu.niit.library_management_system.ExceptionHandler.MemberNotFoundException;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
 import pk.edu.niit.library_management_system.Member.Repository.MemberRepository;
 
@@ -28,31 +29,28 @@ public class MemberServices {
 
     public void deleteMember(long id)
     {
+        if(!memberRepository.existsById(id))
+        {
+            throw new MemberNotFoundException("DELETE/member/id/"+id+": Member not found for id: "+id);
+        }
         memberRepository.deleteById(id);
     }
 
     public Member updateMember(long id, Member member)
     {
-        Optional<Member> existing=memberRepository.findById(id);
-        if(existing.isPresent())
-        {
-            Member updated=existing.get();
-            updated.setMemberName(member.getMemberName());
-            updated.setEmail(member.getEmail());
-            updated.setMembershipDate(member.getMembershipDate());
-            return memberRepository.save(updated);
-        }
-        return null;
+        Member existing=memberRepository.findById(id).orElseThrow(()->
+                new MemberNotFoundException("PUT/member/id/"+id+": Member not found for id: "+id));
+
+            existing.setMemberName(member.getMemberName());
+            existing.setEmail(member.getEmail());
+            existing.setMembershipDate(member.getMembershipDate());
+            return memberRepository.save(existing);
+
     }
 
-    public Member getMemberById(long id)
-    {
-        Optional<Member> existing=memberRepository.findById(id);
-        if(existing.isPresent())
-        {
-            Member member=existing.get();
-            return member;
-        }
-        return null;
+    public Member getMemberById(long id) {
+        Member existing = memberRepository.findById(id).orElseThrow(() ->
+                new MemberNotFoundException("GET/member/id/" + id + ": Member not found for id : " + id));
+        return existing;
     }
 }
