@@ -38,101 +38,47 @@ public class BorrowController {
     @PostMapping
     public ResponseEntity<BorrowRecord> createBorrowRecord(@RequestBody BorrowRecord borrowRecord)
     {
-        try{
             BorrowRecord created=borrowServices.createBorrowRecord(borrowRecord);
-            if(created==null)
-            {
-                log.error("POST/borrowrecord: Invalid book : ");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
 
             log.info("POST/borrowrecord: Borrow record created with this id: {}",created.getBorrowId());
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        }
-        catch (Exception e)
-        {
-            log.error("Error getting all borrow records");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @DeleteMapping("id/{id}")
     public ResponseEntity<?> deleteBorrowRecord(@PathVariable long id)
     {
-        try{
-            BorrowRecord existing= borrowServices.getRecordById(id);
-            if(existing==null)
-            {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
+
             borrowServices.deleteBorrowRecord(id);
             log.info("DELETE/borrowrecord/id/{id}: Borrow record deleted for this id : {}",id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
-        catch (Exception e)
-        {
-            log.error("Error deleting borrow record: {}",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @PutMapping("id/{id}")
     public ResponseEntity<?> updateBorrowRecord(@PathVariable long id, @RequestBody BorrowRecord borrowRecord)
     {
-        try{
             BorrowRecord updated=borrowServices.updateRecord(id,borrowRecord);
-            if(updated==null)
-            {
-                log.warn("Book not found for this id: {}",id);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
             log.info("PUT/borrowrecord/id/{}: Borrow record updated for this id: {}",id);
             return ResponseEntity.ok(updated);
-        }
-        catch (Exception e)
-        {
-            log.error("Error updating borrow record: {}",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @GetMapping("id/{id}")
     public ResponseEntity<?> getBorrowRecordById(@PathVariable long id)
     {
-        try{
             BorrowRecord record=borrowServices.getRecordById(id);
-            if (record==null)
-            {
-                log.error("Book not found for this id: {}",id);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
             log.info("GET/borrowrecord/id/{id}: Book found for this id: {}",id);
             return ResponseEntity.status(HttpStatus.FOUND).body(record);
-        }
-        catch (Exception e)
-        {
-            log.error("Error getting book for this id {} :",id,e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 
     @PutMapping("id/{id}/return")
     public ResponseEntity<?> returnBook(@PathVariable long id)
     {
-        try{
             BorrowRecord record=borrowServices.returnBook(id);
-            if (record==null)
-            {
-                log.error("Book not fond for this id:{}",id);
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-            }
             log.info("PUT/id/{}/return : Book returned",id);
             return ResponseEntity.status(HttpStatus.OK).body(record);
-        }
-        catch (Exception e)
-        {
-            log.error("Error returning book : ",e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+
     }
 }
