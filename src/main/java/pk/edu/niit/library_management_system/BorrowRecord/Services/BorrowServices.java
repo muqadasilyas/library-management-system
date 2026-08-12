@@ -8,6 +8,7 @@ import pk.edu.niit.library_management_system.Book.Repository.BookRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 import pk.edu.niit.library_management_system.BorrowRecord.Repository.BorrowRepository;
 import pk.edu.niit.library_management_system.BorrowRecord.Util.Statuses;
+import pk.edu.niit.library_management_system.ExceptionHandler.BookNotAvailableException;
 import pk.edu.niit.library_management_system.ExceptionHandler.BookNotFoundException;
 import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
 import pk.edu.niit.library_management_system.ExceptionHandler.MemberNotFoundException;
@@ -50,7 +51,7 @@ public class BorrowServices {
         Book book=existing.get();
         if(book.getAvailableCopies()<=0)
         {
-            throw new BookNotFoundException("Book not available to be borrowed for id: "+ bookId);
+            throw new BookNotAvailableException("Book not available to be borrowed for id: "+ bookId);
         }
         book.setAvailableCopies(book.getAvailableCopies()-1);
         bookRepository.save(book);

@@ -56,7 +56,6 @@ public class MemberController {
 
             log.info("PUT/member/id/{}: Member updated for this id: {}",id);
             return ResponseEntity.ok(updated);
-
     }
 
     @GetMapping("id/{id}")
@@ -66,7 +65,6 @@ public class MemberController {
             Member member=memberServices.getMemberById(id);
             log.info("GET/member/id/{}: Member found for this id :{}",id);
             return ResponseEntity.ok(member);
-
 
     }
 }
