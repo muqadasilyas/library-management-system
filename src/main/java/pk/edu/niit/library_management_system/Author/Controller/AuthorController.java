@@ -1,5 +1,6 @@
 package pk.edu.niit.library_management_system.Author.Controller;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Author> createAuthor(@RequestBody Author author)
+    public ResponseEntity<Author> createAuthor(@Valid @RequestBody Author author)
     {
             authorServices.createAuthor(author);
             log.info("POST/author: Author created with id {}",author.getAuthorId());
@@ -53,7 +54,7 @@ public class AuthorController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable long id, @RequestBody Author author)
+    public ResponseEntity<Author> updateAuthor(@PathVariable long id,@Valid @RequestBody Author author)
     {
             Author updated=authorServices.updateAuthor(id,author);
             log.info("PUT/author/id/{} : Author updated",id);

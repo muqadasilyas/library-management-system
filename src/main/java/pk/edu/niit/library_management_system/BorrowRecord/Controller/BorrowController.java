@@ -1,5 +1,6 @@
 package pk.edu.niit.library_management_system.BorrowRecord.Controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class BorrowController {
     }
 
     @PostMapping
-    public ResponseEntity<BorrowRecord> createBorrowRecord(@RequestBody BorrowRecord borrowRecord)
+    public ResponseEntity<BorrowRecord> createBorrowRecord(@Valid @RequestBody BorrowRecord borrowRecord)
     {
             BorrowRecord created=borrowServices.createBorrowRecord(borrowRecord);
 
@@ -56,7 +57,7 @@ public class BorrowController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<?> updateBorrowRecord(@PathVariable long id, @RequestBody BorrowRecord borrowRecord)
+    public ResponseEntity<?> updateBorrowRecord(@PathVariable long id,@Valid @RequestBody BorrowRecord borrowRecord)
     {
             BorrowRecord updated=borrowServices.updateRecord(id,borrowRecord);
             log.info("PUT/borrowrecord/id/{}: Borrow record updated for this id: {}",id);

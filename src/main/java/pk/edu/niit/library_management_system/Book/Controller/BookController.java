@@ -1,5 +1,6 @@
 package pk.edu.niit.library_management_system.Book.Controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book)
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book)
     {
             Book created=bookServices.createBook(book);
             log.info("POST/book : Book created for this id :{}",created.getBookId());
@@ -53,7 +54,7 @@ public class BookController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable long id, @RequestBody Book book)
+    public ResponseEntity<Book> updateBook(@PathVariable long id, @Valid @RequestBody Book book)
     {
             Book updateBook = bookServices.updateBook(id, book);
             log.info("PUT/book/id/{}: Book updated",id);

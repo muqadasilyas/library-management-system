@@ -1,5 +1,6 @@
 package pk.edu.niit.library_management_system.Member.Controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Member> createMember(@RequestBody Member member)
+    public ResponseEntity<Member> createMember(@Valid @RequestBody Member member)
     {
             Member created=memberServices.createMember(member);
             log.info("POST/member : Member created for this id: {}",created.getMemberId());
@@ -50,7 +51,7 @@ public class MemberController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable long id, @RequestBody Member member)
+    public ResponseEntity<Member> updateMember(@PathVariable long id,@Valid @RequestBody Member member)
     {
             Member updated=memberServices.updateMember(id,member);
 
