@@ -3,6 +3,7 @@ package pk.edu.niit.library_management_system.Member.Entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,5 +24,6 @@ public class Member {
     @Email(message = "It should be written in email format")
     private String email;
     @Column
+    @NotNull(message = "Membership date must not be null")
     private LocalDate membershipDate;
 }

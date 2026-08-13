@@ -1,7 +1,9 @@
 package pk.edu.niit.library_management_system.Book.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import pk.edu.niit.library_management_system.Author.Entity.Author;
@@ -21,10 +23,10 @@ public class Book {
     @NotBlank(message = "ISBN must be valid")
     private String isbn;
     @Column
-    @NotBlank(message = "Total copies must be mentioned")
+    @Min(value=1,message = "Total copies must not be less than 1")
     private int totalCopies;
     @Column
-    @NotBlank(message = "Available copies must not be blank")
+    @Min(value=0,message = "Available copies must not be less than 0")
     private int availableCopies;
     @ManyToOne
     @JoinColumn(name="authorId")

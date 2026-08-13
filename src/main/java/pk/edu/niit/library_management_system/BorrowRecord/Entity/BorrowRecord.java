@@ -2,6 +2,7 @@ package pk.edu.niit.library_management_system.BorrowRecord.Entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import pk.edu.niit.library_management_system.Book.Entity.Book;
 import pk.edu.niit.library_management_system.BorrowRecord.Util.Statuses;
@@ -17,10 +18,10 @@ public class BorrowRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long borrowId;
     @Column
-    @NotBlank(message = "Borrow date should not be blank")
+    @NotNull(message = "Borrow date should not be empty")
     private LocalDate borrowDate;
     @Column
-    @NotBlank(message = "Due date should not be blank")
+    @NotNull(message = "Due date should not be empty")
     private LocalDate dueDate;
     @Column(nullable = true)
     private LocalDate returnDate;
