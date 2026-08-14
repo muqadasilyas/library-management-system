@@ -13,5 +13,5 @@ public class BookResponseDTO {
     private String isbn;
     private int totalCopies;
     private int availableCopies;
-    private Author author;
+    private String AuthorName;
 }

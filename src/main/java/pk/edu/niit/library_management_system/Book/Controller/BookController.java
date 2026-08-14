@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pk.edu.niit.library_management_system.Author.Entity.Author;
+import pk.edu.niit.library_management_system.Author.Services.AuthorServices;
 import pk.edu.niit.library_management_system.Book.DTO.BookRequestDTO;
 import pk.edu.niit.library_management_system.Book.DTO.BookResponseDTO;
 import pk.edu.niit.library_management_system.Book.Entity.Book;
@@ -20,6 +22,8 @@ import java.util.List;
 public class BookController {
     @Autowired
     private BookServices bookServices;
+    @Autowired
+    private AuthorServices authorServices;
 
     @GetMapping
     public ResponseEntity<List<BookResponseDTO>> getAllBooks()
@@ -33,7 +37,7 @@ public class BookController {
                 BookResponseDTO responseDTO=new BookResponseDTO();
                 responseDTO.setBookId(book.getBookId());
                 responseDTO.setIsbn(book.getIsbn());
-                responseDTO.setAuthor(book.getAuthor());
+                responseDTO.setAuthorName(book.getAuthor().getAuthorName());
                 responseDTO.setTitle(book.getTitle());
                 responseDTO.setTotalCopies(book.getTotalCopies());
                 responseDTO.setAvailableCopies(book.getAvailableCopies());
@@ -49,16 +53,17 @@ public class BookController {
     public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookRequestDTO dto)
     {
             Book book=new Book();
+            Author author=authorServices.getAuthorById(dto.getAuthorId());
             book.setIsbn(dto.getIsbn());
             book.setTitle(dto.getTitle());
-            book.setAuthor(dto.getAuthor());
+            book.setAuthor(author);
             book.setTotalCopies(dto.getTotalCopies());
             book.setAvailableCopies(dto.getAvailableCopies());
             Book created=bookServices.createBook(book);
             BookResponseDTO responseDTO=new BookResponseDTO();
             responseDTO.setBookId(book.getBookId());
             responseDTO.setIsbn(book.getIsbn());
-            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setAuthorName(book.getAuthor().getAuthorName());
             responseDTO.setTitle(book.getTitle());
             responseDTO.setTotalCopies(book.getTotalCopies());
             responseDTO.setAvailableCopies(book.getAvailableCopies());
@@ -82,16 +87,17 @@ public class BookController {
     public ResponseEntity<BookResponseDTO> updateBook(@PathVariable long id, @Valid @RequestBody BookRequestDTO dto)
     {
             Book book=new Book();
+            Author author= authorServices.getAuthorById(dto.getAuthorId());
             book.setAvailableCopies(dto.getAvailableCopies());
             book.setIsbn(dto.getIsbn());
             book.setTitle(dto.getTitle());
-            book.setAuthor(dto.getAuthor());
+            book.setAuthor(author);
             book.setTotalCopies(dto.getTotalCopies());
             Book updateBook = bookServices.updateBook(id, book);
             BookResponseDTO responseDTO=new BookResponseDTO();
             responseDTO.setBookId(book.getBookId());
             responseDTO.setIsbn(book.getIsbn());
-            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setAuthorName(book.getAuthor().getAuthorName());
             responseDTO.setTitle(book.getTitle());
             responseDTO.setTotalCopies(book.getTotalCopies());
             responseDTO.setAvailableCopies(book.getAvailableCopies());
@@ -107,7 +113,7 @@ public class BookController {
             BookResponseDTO responseDTO=new BookResponseDTO();
             responseDTO.setBookId(book.getBookId());
             responseDTO.setIsbn(book.getIsbn());
-            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setAuthorName(book.getAuthor().getAuthorName());
             responseDTO.setTitle(book.getTitle());
             responseDTO.setTotalCopies(book.getTotalCopies());
             responseDTO.setAvailableCopies(book.getAvailableCopies());
