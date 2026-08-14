@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pk.edu.niit.library_management_system.Book.DTO.BookRequestDTO;
+import pk.edu.niit.library_management_system.Book.DTO.BookResponseDTO;
 import pk.edu.niit.library_management_system.Book.Entity.Book;
 import pk.edu.niit.library_management_system.Book.Services.BookServices;
 import pk.edu.niit.library_management_system.ExceptionHandler.BookNotFoundException;
@@ -20,25 +22,48 @@ public class BookController {
     private BookServices bookServices;
 
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks()
+    public ResponseEntity<List<BookResponseDTO>> getAllBooks()
     {
             List<Book> books=bookServices.getAllBooks();
             if (books.isEmpty())
             {
                 throw new BookNotFoundException("GET/books:Books not found");
             }
-            log.info("GET/book : {} Books found",books.size());
-            return ResponseEntity.ok(books);
+            List<BookResponseDTO> responseDTOS=books.stream().map(book->{
+                BookResponseDTO responseDTO=new BookResponseDTO();
+                responseDTO.setBookId(book.getBookId());
+                responseDTO.setIsbn(book.getIsbn());
+                responseDTO.setAuthor(book.getAuthor());
+                responseDTO.setTitle(book.getTitle());
+                responseDTO.setTotalCopies(book.getTotalCopies());
+                responseDTO.setAvailableCopies(book.getAvailableCopies());
+                return responseDTO;
+            }).toList();
+            log.info("GET/book : {} Books found",responseDTOS.size());
+            return ResponseEntity.ok(responseDTOS);
 
 
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book)
+    public ResponseEntity<BookResponseDTO> createBook(@Valid @RequestBody BookRequestDTO dto)
     {
+            Book book=new Book();
+            book.setIsbn(dto.getIsbn());
+            book.setTitle(dto.getTitle());
+            book.setAuthor(dto.getAuthor());
+            book.setTotalCopies(dto.getTotalCopies());
+            book.setAvailableCopies(dto.getAvailableCopies());
             Book created=bookServices.createBook(book);
-            log.info("POST/book : Book created for this id :{}",created.getBookId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            BookResponseDTO responseDTO=new BookResponseDTO();
+            responseDTO.setBookId(book.getBookId());
+            responseDTO.setIsbn(book.getIsbn());
+            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setTitle(book.getTitle());
+            responseDTO.setTotalCopies(book.getTotalCopies());
+            responseDTO.setAvailableCopies(book.getAvailableCopies());
+            log.info("POST/book : Book created for this id :{}",responseDTO.getBookId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
 
     }
@@ -54,22 +79,43 @@ public class BookController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable long id, @Valid @RequestBody Book book)
+    public ResponseEntity<BookResponseDTO> updateBook(@PathVariable long id, @Valid @RequestBody BookRequestDTO dto)
     {
+            Book book=new Book();
+            book.setAvailableCopies(dto.getAvailableCopies());
+            book.setIsbn(dto.getIsbn());
+            book.setTitle(dto.getTitle());
+            book.setAuthor(dto.getAuthor());
+            book.setTotalCopies(dto.getTotalCopies());
             Book updateBook = bookServices.updateBook(id, book);
+            BookResponseDTO responseDTO=new BookResponseDTO();
+            responseDTO.setBookId(book.getBookId());
+            responseDTO.setIsbn(book.getIsbn());
+            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setTitle(book.getTitle());
+            responseDTO.setTotalCopies(book.getTotalCopies());
+            responseDTO.setAvailableCopies(book.getAvailableCopies());
             log.info("PUT/book/id/{}: Book updated",id);
-            return ResponseEntity.ok(updateBook);
+            return ResponseEntity.ok(responseDTO);
 
     }
 
     @GetMapping("id/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable long id)
+    public ResponseEntity<BookResponseDTO> getBookById(@PathVariable long id)
     {
             Book book=bookServices.getBookByID(id);
+            BookResponseDTO responseDTO=new BookResponseDTO();
+            responseDTO.setBookId(book.getBookId());
+            responseDTO.setIsbn(book.getIsbn());
+            responseDTO.setAuthor(book.getAuthor());
+            responseDTO.setTitle(book.getTitle());
+            responseDTO.setTotalCopies(book.getTotalCopies());
+            responseDTO.setAvailableCopies(book.getAvailableCopies());
 
             log.info("GET/id/{}: Book found for this id {}",id);
-            return ResponseEntity.status(HttpStatus.OK).body(book);
+            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
     }
 
 }
+g

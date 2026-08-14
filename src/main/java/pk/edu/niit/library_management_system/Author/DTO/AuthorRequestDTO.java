@@ -8,6 +8,6 @@ import lombok.Data;
 public class AuthorRequestDTO {
     @NotBlank(message = "Name must not be blank")
     private String authorName;
-    @Size(min=10,max=500,message = "Bio description must be between 10 and 50 characters")
+    @Size(min=10,max=500,message = "Bio description must be between 10 and 500 characters")
     private String bio;
 }
