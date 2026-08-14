@@ -24,15 +24,22 @@ public class AuthorController {
     private AuthorServices authorServices;
 
     @GetMapping
-    public ResponseEntity<List<Author>> getAll()
+    public ResponseEntity<List<AuthorResponseDTO>> getAll()
     {
             List<Author> authors=authorServices.getAllAuthors();
+
             if(authors.isEmpty())
             {
                 throw new AuthorNotFoundException("GET/author: No authors found");
             }
+            List<AuthorResponseDTO> responseDTOS=authors.stream().map(author ->
+            {AuthorResponseDTO response=new AuthorResponseDTO();
+            response.setId(author.getAuthorId());
+            response.setAuthorName(author.getAuthorName());
+            response.setBio(author.getBio());
+                return response;}).toList();
             log.info("Get/author: All authors found");
-            return ResponseEntity.ok(authors);
+            return ResponseEntity.ok(responseDTOS);
     }
 
     @PostMapping
@@ -82,8 +89,12 @@ public class AuthorController {
     public ResponseEntity<?> getAuthorById(@PathVariable long id) {
 
         Author author = authorServices.getAuthorById(id);
+        AuthorResponseDTO responseDTO=new AuthorResponseDTO();
+        responseDTO.setId(author.getAuthorId());
+        responseDTO.setAuthorName(author.getAuthorName());
+        responseDTO.setBio(author.getBio());
         log.info("GET/author/id/{} :Author found :", id);
-        return ResponseEntity.ok(author);
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
