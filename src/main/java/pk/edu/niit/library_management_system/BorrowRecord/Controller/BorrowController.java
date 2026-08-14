@@ -70,7 +70,7 @@ public class BorrowController {
     {
             BorrowRecord record=borrowServices.getRecordById(id);
             log.info("GET/borrowrecord/id/{id}: Book found for this id: {}",id);
-            return ResponseEntity.status(HttpStatus.FOUND).body(record);
+            return ResponseEntity.status(HttpStatus.OK).body(record);
 
     }
 

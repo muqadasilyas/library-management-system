@@ -68,7 +68,7 @@ public class BookController {
             Book book=bookServices.getBookByID(id);
 
             log.info("GET/id/{}: Book found for this id {}",id);
-            return ResponseEntity.status(HttpStatus.FOUND).body(book);
+            return ResponseEntity.status(HttpStatus.OK).body(book);
 
     }
 

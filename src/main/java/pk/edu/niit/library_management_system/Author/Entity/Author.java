@@ -16,10 +16,8 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long authorId;
     @Column
-    @NotBlank(message = "Author name is required")
     private String authorName;
     @Column
-    @Size(min=10,max=500, message = "bio description must be between 10 and 500")
     private String bio;
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     @JsonIgnore

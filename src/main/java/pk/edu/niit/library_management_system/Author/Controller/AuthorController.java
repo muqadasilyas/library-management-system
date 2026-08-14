@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pk.edu.niit.library_management_system.Author.DTO.AuthorRequestDTO;
+import pk.edu.niit.library_management_system.Author.DTO.AuthorResponseDTO;
 import pk.edu.niit.library_management_system.Author.Entity.Author;
 import pk.edu.niit.library_management_system.Author.Services.AuthorServices;
 import pk.edu.niit.library_management_system.ExceptionHandler.AuthorNotFoundException;
@@ -34,11 +36,18 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity<Author> createAuthor(@Valid @RequestBody Author author)
+    public ResponseEntity<AuthorResponseDTO> createAuthor(@Valid @RequestBody AuthorRequestDTO dto)
     {
+            Author author=new Author();
+            author.setAuthorName(dto.getAuthorName());
+            author.setBio(dto.getBio());
             authorServices.createAuthor(author);
-            log.info("POST/author: Author created with id {}",author.getAuthorId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(author);
+            AuthorResponseDTO responseDTO = new AuthorResponseDTO();
+            responseDTO.setId(author.getAuthorId());
+            responseDTO.setAuthorName(author.getAuthorName());
+            responseDTO.setBio(author.getBio());
+            log.info("POST/author: Author created with id {}",responseDTO.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
     }
 
@@ -54,11 +63,18 @@ public class AuthorController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Author> updateAuthor(@PathVariable long id,@Valid @RequestBody Author author)
+    public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable long id,@Valid @RequestBody AuthorRequestDTO authorRequestDTO)
     {
+           Author author=new Author();
+           author.setAuthorName(authorRequestDTO.getAuthorName());
+           author.setBio(authorRequestDTO.getBio());
             Author updated=authorServices.updateAuthor(id,author);
+            AuthorResponseDTO responseDTO=new AuthorResponseDTO();
+            responseDTO.setId(updated.getAuthorId());
+            responseDTO.setAuthorName(updated.getAuthorName());
+            responseDTO.setBio(updated.getBio());
             log.info("PUT/author/id/{} : Author updated",id);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(responseDTO);
 
     }
 
