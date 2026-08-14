@@ -7,9 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
+import pk.edu.niit.library_management_system.Book.Services.BookServices;
+import pk.edu.niit.library_management_system.BorrowRecord.DTO.BorrowRecordRequestDTO;
+import pk.edu.niit.library_management_system.BorrowRecord.DTO.BorrowRecordResponseDTO;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
 import pk.edu.niit.library_management_system.BorrowRecord.Services.BorrowServices;
 import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
+import pk.edu.niit.library_management_system.Member.Entity.Member;
+import pk.edu.niit.library_management_system.Member.Services.MemberServices;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +25,13 @@ import java.util.Optional;
 public class BorrowController {
     @Autowired
     private BorrowServices borrowServices;
+    @Autowired
+    private MemberServices memberServices;
+    @Autowired
+    private BookServices bookServices;
 
     @GetMapping
-    public ResponseEntity<List<BorrowRecord>> getAll()
+    public ResponseEntity<List<BorrowRecordResponseDTO>> getAll()
     {
             List<BorrowRecord> records=borrowServices.getAllBorrowRecords();
             if(records==null)
@@ -31,18 +40,45 @@ public class BorrowController {
                         "GET/borrowrecord: Borrow records not found"
                 );
             }
-            log.info("GET/borrowrecord : {} Borrow Records found",records.size());
-            return ResponseEntity.ok(records);
+            List<BorrowRecordResponseDTO> responseDTOS=records.stream().map(borrowRecord -> {
+                BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
+                responseDTO.setBorrowId(borrowRecord.getBorrowId());
+                responseDTO.setBorrowDate(borrowRecord.getBorrowDate());
+                responseDTO.setBookName(borrowRecord.getBook().getTitle());
+                responseDTO.setStatus(borrowRecord.getStatus());
+                responseDTO.setDueDate(borrowRecord.getDueDate());
+                responseDTO.setMemberName(borrowRecord.getMember().getMemberName());
+                responseDTO.setReturnDate(borrowRecord.getReturnDate());
+                return responseDTO;
+            }).toList();
+
+            log.info("GET/borrowrecord : {} Borrow Records found",responseDTOS.size());
+            return ResponseEntity.ok(responseDTOS);
 
     }
 
     @PostMapping
-    public ResponseEntity<BorrowRecord> createBorrowRecord(@Valid @RequestBody BorrowRecord borrowRecord)
+    public ResponseEntity<BorrowRecordResponseDTO> createBorrowRecord(@Valid @RequestBody BorrowRecordRequestDTO recordRequestDTO)
     {
-            BorrowRecord created=borrowServices.createBorrowRecord(borrowRecord);
+            BorrowRecord record=new BorrowRecord();
 
-            log.info("POST/borrowrecord: Borrow record created with this id: {}",created.getBorrowId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+            record.setMember(memberServices.getMemberById(recordRequestDTO.getMemberId()));
+            record.setBook(bookServices.getBookByID(recordRequestDTO.getBookId()));
+            record.setReturnDate(recordRequestDTO.getReturnDate());
+            record.setBorrowDate(recordRequestDTO.getBorrowDate());
+            record.setStatus(recordRequestDTO.getStatus());
+            record.setDueDate(recordRequestDTO.getDueDate());
+            BorrowRecord created=borrowServices.createBorrowRecord(record);
+            BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
+            responseDTO.setBorrowId(created.getBorrowId());
+            responseDTO.setBorrowDate(created.getBorrowDate());
+            responseDTO.setBookName(created.getBook().getTitle());
+            responseDTO.setStatus(created.getStatus());
+            responseDTO.setDueDate(created.getDueDate());
+            responseDTO.setMemberName(created.getMember().getMemberName());
+            responseDTO.setReturnDate(created.getReturnDate());
+            log.info("POST/borrowrecord: Borrow record created with this id: {}",responseDTO.getBorrowId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
     }
 
@@ -60,6 +96,7 @@ public class BorrowController {
     public ResponseEntity<?> updateBorrowRecord(@PathVariable long id,@Valid @RequestBody BorrowRecord borrowRecord)
     {
             BorrowRecord updated=borrowServices.updateRecord(id,borrowRecord);
+
             log.info("PUT/borrowrecord/id/{}: Borrow record updated for this id: {}",id);
             return ResponseEntity.ok(updated);
 

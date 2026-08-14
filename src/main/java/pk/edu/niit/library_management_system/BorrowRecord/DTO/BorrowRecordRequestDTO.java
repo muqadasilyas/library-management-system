@@ -18,8 +18,8 @@ public class BorrowRecordRequestDTO {
     private LocalDate returnDate;
     @NotBlank(message = "Status must not be blank")
     private Statuses status;
-    @NotNull
-    private Book book;
-    @NotNull
-    private Member member;
+    @NotNull(message = "Book ID is required")
+    private long bookId;
+    @NotNull(message = "Member ID is required")
+    private long memberId;
 }

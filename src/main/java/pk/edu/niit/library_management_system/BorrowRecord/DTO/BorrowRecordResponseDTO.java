@@ -15,8 +15,6 @@ public class BorrowRecordResponseDTO {
     private LocalDate dueDate;
     private LocalDate returnDate;
     private Statuses status;
-    private Book book;
-    @ManyToOne
-    @JoinColumn(name = "memberId")
-    private Member member;
+    private String bookName;
+    private String memberName;
 }
