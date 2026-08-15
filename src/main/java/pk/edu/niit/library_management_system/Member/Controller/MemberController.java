@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pk.edu.niit.library_management_system.ExceptionHandler.MemberNotFoundException;
+import pk.edu.niit.library_management_system.Member.DTO.MemberRequestDTO;
+import pk.edu.niit.library_management_system.Member.DTO.MemberResponseDTO;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
 import pk.edu.niit.library_management_system.Member.Services.MemberServices;
 
@@ -21,22 +23,39 @@ public class MemberController {
     private MemberServices memberServices;
 
     @GetMapping
-    public ResponseEntity<List<Member>> getAllMembers()
+    public ResponseEntity<List<MemberResponseDTO>> getAllMembers()
     {
             List<Member> members=memberServices.getAllMembers();
             if(members==null)
             {
                 throw new MemberNotFoundException("GET/member: Members not found");
             }
-            log.info("GET/member: {} Members found: ",members.size());
-            return ResponseEntity.ok(members);
+            List<MemberResponseDTO> responseDTOS=members.stream().map(member -> {
+                MemberResponseDTO responseDTO=new MemberResponseDTO();
+                responseDTO.setMemberId(member.getMemberId());
+                responseDTO.setMemberName(member.getMemberName());
+                responseDTO.setEmail(member.getEmail());
+                responseDTO.setMembershipDate(member.getMembershipDate());
+                return responseDTO;
+            }).toList();
+            log.info("GET/member: {} Members found: ",responseDTOS.size());
+            return ResponseEntity.ok(responseDTOS);
     }
 
     @PostMapping
-    public ResponseEntity<Member> createMember(@Valid @RequestBody Member member)
+    public ResponseEntity<MemberResponseDTO> createMember(@Valid @RequestBody MemberRequestDTO requestDTO)
     {
+            Member member=new Member();
+            member.setMemberName(requestDTO.getMemberName());
+            member.setEmail(requestDTO.getEmail());
+            member.setMembershipDate(requestDTO.getMembershipDate());
             Member created=memberServices.createMember(member);
-            log.info("POST/member : Member created for this id: {}",created.getMemberId());
+            MemberResponseDTO responseDTO=new MemberResponseDTO();
+            responseDTO.setMemberId(created.getMemberId());
+            responseDTO.setMemberName(created.getMemberName());
+            responseDTO.setMembershipDate(created.getMembershipDate());
+            responseDTO.setEmail(created.getEmail());
+            log.info("POST/member : Member created for this id: {}",responseDTO.getMemberId());
             return ResponseEntity.status(HttpStatus.CREATED).build();
 
     }
@@ -51,21 +70,35 @@ public class MemberController {
     }
 
     @PutMapping("id/{id}")
-    public ResponseEntity<Member> updateMember(@PathVariable long id,@Valid @RequestBody Member member)
+    public ResponseEntity<MemberResponseDTO> updateMember(@PathVariable long id,@Valid @RequestBody MemberRequestDTO memberRequestDTO)
     {
+            Member member=new Member();
+            member.setMemberName(memberRequestDTO.getMemberName());
+            member.setMembershipDate(memberRequestDTO.getMembershipDate());
+            member.setEmail(memberRequestDTO.getEmail());
             Member updated=memberServices.updateMember(id,member);
+            MemberResponseDTO responseDTO=new MemberResponseDTO();
+            responseDTO.setMemberId(updated.getMemberId());
+            responseDTO.setMemberName(updated.getMemberName());
+            responseDTO.setEmail(updated.getEmail());
+            responseDTO.setMembershipDate(updated.getMembershipDate());
 
             log.info("PUT/member/id/{}: Member updated for this id: {}",id);
-            return ResponseEntity.ok(updated);
+            return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping("id/{id}")
-    public ResponseEntity<Member> getMemberById(@PathVariable long id)
+    public ResponseEntity<MemberResponseDTO> getMemberById(@PathVariable long id)
     {
 
             Member member=memberServices.getMemberById(id);
+            MemberResponseDTO responseDTO=new MemberResponseDTO();
+            responseDTO.setMemberId(member.getMemberId());
+            responseDTO.setMemberName(member.getMemberName());
+            responseDTO.setEmail(member.getEmail());
+            responseDTO.setMembershipDate(member.getMembershipDate());
             log.info("GET/member/id/{}: Member found for this id :{}",id);
-            return ResponseEntity.ok(member);
+            return ResponseEntity.ok(responseDTO);
 
     }
 }

@@ -18,12 +18,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long memberId;
     @Column
-    @Size(min=10, max=20, message = "Member name should be between 10 and 20")
     private String memberName;
     @Column
-    @Email(message = "It should be written in email format")
     private String email;
     @Column
-    @NotNull(message = "Membership date must not be null")
     private LocalDate membershipDate;
 }

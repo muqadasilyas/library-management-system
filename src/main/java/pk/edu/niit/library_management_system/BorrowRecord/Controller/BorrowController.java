@@ -144,7 +144,7 @@ public class BorrowController {
             responseDTO.setBookName(record.getBook().getTitle());
             responseDTO.setBorrowDate(record.getBorrowDate());
             responseDTO.setStatus(record.getStatus());
-            responseDTO.getMemberName(record.getMember().getMemberName();
+            responseDTO.setMemberName(record.getMember().getMemberName());
             responseDTO.setReturnDate(record.getReturnDate());
             responseDTO.setDueDate(record.getDueDate());
             log.info("PUT/id/{}/return : Book returned",id);
