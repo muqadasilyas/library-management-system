@@ -26,7 +26,7 @@ public class MemberController {
     public ResponseEntity<List<MemberResponseDTO>> getAllMembers()
     {
             List<Member> members=memberServices.getAllMembers();
-            if(members==null)
+            if(members.isEmpty())
             {
                 throw new MemberNotFoundException("GET/member: Members not found");
             }

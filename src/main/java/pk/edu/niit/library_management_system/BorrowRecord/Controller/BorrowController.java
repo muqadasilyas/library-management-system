@@ -34,7 +34,7 @@ public class BorrowController {
     public ResponseEntity<List<BorrowRecordResponseDTO>> getAll()
     {
             List<BorrowRecord> records=borrowServices.getAllBorrowRecords();
-            if(records==null)
+            if(records.isEmpty())
             {
                 throw new BorrowRecordNotFoundException(
                         "GET/borrowrecord: Borrow records not found"
