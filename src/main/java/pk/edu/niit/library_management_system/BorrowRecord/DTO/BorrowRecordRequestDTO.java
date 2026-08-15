@@ -16,7 +16,7 @@ public class BorrowRecordRequestDTO {
     @NotNull(message = "Due date should not be empty")
     private LocalDate dueDate;
     private LocalDate returnDate;
-    @NotBlank(message = "Status must not be blank")
+    @NotNull(message = "Status is required")
     private Statuses status;
     @NotNull(message = "Book ID is required")
     private long bookId;

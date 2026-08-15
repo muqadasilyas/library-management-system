@@ -105,13 +105,13 @@ public class BorrowController {
         BorrowRecord updated=borrowServices.updateRecord(id,borrowRecord);
 
         BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-        responseDTO.setBorrowId(borrowRecord.getBorrowId());
-        responseDTO.setBorrowDate(borrowRecord.getBorrowDate());
-        responseDTO.setStatus(borrowRecord.getStatus());
-        responseDTO.setBookName(borrowRecord.getBook().getTitle());
-        responseDTO.setMemberName(borrowRecord.getMember().getMemberName());
-        responseDTO.setDueDate(borrowRecord.getDueDate());
-        responseDTO.setReturnDate(borrowRecord.getReturnDate());
+        responseDTO.setBorrowId(updated.getBorrowId());
+        responseDTO.setBorrowDate(updated.getBorrowDate());
+        responseDTO.setStatus(updated.getStatus());
+        responseDTO.setBookName(updated.getBook().getTitle());
+        responseDTO.setMemberName(updated.getMember().getMemberName());
+        responseDTO.setDueDate(updated.getDueDate());
+        responseDTO.setReturnDate(updated.getReturnDate());
 
             log.info("PUT/borrowrecord/id/{}: Borrow record updated for this id: {}",id);
             return ResponseEntity.ok(responseDTO);
