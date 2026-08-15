@@ -56,7 +56,7 @@ public class MemberController {
             responseDTO.setMembershipDate(created.getMembershipDate());
             responseDTO.setEmail(created.getEmail());
             log.info("POST/member : Member created for this id: {}",responseDTO.getMemberId());
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
     }
 
