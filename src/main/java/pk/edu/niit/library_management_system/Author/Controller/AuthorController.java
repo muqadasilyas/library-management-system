@@ -70,14 +70,9 @@ public class AuthorController {
     @PutMapping("id/{id}")
     public ResponseEntity<AuthorResponseDTO> updateAuthor(@PathVariable long id,@Valid @RequestBody AuthorRequestDTO authorRequestDTO)
     {
-           Author author=new Author();
-           author.setAuthorName(authorRequestDTO.getAuthorName());
-           author.setBio(authorRequestDTO.getBio());
+           Author author=authorMapper.toEntity(authorRequestDTO);
             Author updated=authorServices.updateAuthor(id,author);
-            AuthorResponseDTO responseDTO=new AuthorResponseDTO();
-            responseDTO.setId(updated.getAuthorId());
-            responseDTO.setAuthorName(updated.getAuthorName());
-            responseDTO.setBio(updated.getBio());
+            AuthorResponseDTO responseDTO=authorMapper.toResponseDTO(updated);
             log.info("PUT/author/id/{} : Author updated",id);
             return ResponseEntity.ok(responseDTO);
 
@@ -87,10 +82,7 @@ public class AuthorController {
     public ResponseEntity<?> getAuthorById(@PathVariable long id) {
 
         Author author = authorServices.getAuthorById(id);
-        AuthorResponseDTO responseDTO=new AuthorResponseDTO();
-        responseDTO.setId(author.getAuthorId());
-        responseDTO.setAuthorName(author.getAuthorName());
-        responseDTO.setBio(author.getBio());
+        AuthorResponseDTO responseDTO=authorMapper.toResponseDTO(author);
         log.info("GET/author/id/{} :Author found :", id);
         return ResponseEntity.ok(responseDTO);
     }
