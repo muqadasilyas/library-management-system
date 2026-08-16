@@ -36,10 +36,7 @@ public class AuthorController {
                 throw new AuthorNotFoundException("GET/author: No authors found");
             }
             List<AuthorResponseDTO> responseDTOS=authors.stream().map(author ->
-            {AuthorResponseDTO response=new AuthorResponseDTO();
-            response.setId(author.getAuthorId());
-            response.setAuthorName(author.getAuthorName());
-            response.setBio(author.getBio());
+            {AuthorResponseDTO response=authorMapper.toResponseDTO(author);
                 return response;}).toList();
             log.info("Get/author: All authors found");
             return ResponseEntity.ok(responseDTOS);
