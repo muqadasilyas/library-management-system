@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import pk.edu.niit.library_management_system.Author.DTO.AuthorRequestDTO;
 import pk.edu.niit.library_management_system.Author.DTO.AuthorResponseDTO;
 import pk.edu.niit.library_management_system.Author.Entity.Author;
+import pk.edu.niit.library_management_system.Author.Mapper.AuthorMapper;
 import pk.edu.niit.library_management_system.Author.Services.AuthorServices;
 import pk.edu.niit.library_management_system.ExceptionHandler.AuthorNotFoundException;
 
@@ -22,6 +23,8 @@ import java.util.List;
 public class AuthorController {
     @Autowired
     private AuthorServices authorServices;
+    @Autowired
+    private AuthorMapper authorMapper;
 
     @GetMapping
     public ResponseEntity<List<AuthorResponseDTO>> getAll()
@@ -45,14 +48,9 @@ public class AuthorController {
     @PostMapping
     public ResponseEntity<AuthorResponseDTO> createAuthor(@Valid @RequestBody AuthorRequestDTO dto)
     {
-            Author author=new Author();
-            author.setAuthorName(dto.getAuthorName());
-            author.setBio(dto.getBio());
-            authorServices.createAuthor(author);
-            AuthorResponseDTO responseDTO = new AuthorResponseDTO();
-            responseDTO.setId(author.getAuthorId());
-            responseDTO.setAuthorName(author.getAuthorName());
-            responseDTO.setBio(author.getBio());
+            Author author= authorMapper.toEntity(dto);
+            Author created=authorServices.createAuthor(author);
+            AuthorResponseDTO responseDTO = authorMapper.toResponseDTO(created);
             log.info("POST/author: Author created with id {}",responseDTO.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
