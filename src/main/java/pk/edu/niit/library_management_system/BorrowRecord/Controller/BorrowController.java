@@ -54,7 +54,7 @@ public class BorrowController {
     {
             BorrowRecord record=borrowMapper.toEntity(recordRequestDTO);
             BorrowRecord created=borrowServices.createBorrowRecord(record);
-            BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(created)
+            BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(created);
             log.info("POST/borrowrecord: Borrow record created with this id: {}",responseDTO.getBorrowId());
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
