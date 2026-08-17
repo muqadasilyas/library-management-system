@@ -33,6 +33,7 @@ public class BookMapper {
         responseDTO.setTitle(book.getTitle());
         responseDTO.setTotalCopies(book.getTotalCopies());
         responseDTO.setAvailableCopies(book.getAvailableCopies());
+        return responseDTO;
     }
 
 }

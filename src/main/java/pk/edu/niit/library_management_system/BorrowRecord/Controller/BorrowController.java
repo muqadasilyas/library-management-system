@@ -11,6 +11,7 @@ import pk.edu.niit.library_management_system.Book.Services.BookServices;
 import pk.edu.niit.library_management_system.BorrowRecord.DTO.BorrowRecordRequestDTO;
 import pk.edu.niit.library_management_system.BorrowRecord.DTO.BorrowRecordResponseDTO;
 import pk.edu.niit.library_management_system.BorrowRecord.Entity.BorrowRecord;
+import pk.edu.niit.library_management_system.BorrowRecord.Mapper.BorrowMapper;
 import pk.edu.niit.library_management_system.BorrowRecord.Services.BorrowServices;
 import pk.edu.niit.library_management_system.ExceptionHandler.BorrowRecordNotFoundException;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
@@ -26,9 +27,7 @@ public class BorrowController {
     @Autowired
     private BorrowServices borrowServices;
     @Autowired
-    private MemberServices memberServices;
-    @Autowired
-    private BookServices bookServices;
+    private BorrowMapper borrowMapper;
 
     @GetMapping
     public ResponseEntity<List<BorrowRecordResponseDTO>> getAll()
@@ -41,14 +40,7 @@ public class BorrowController {
                 );
             }
             List<BorrowRecordResponseDTO> responseDTOS=records.stream().map(borrowRecord -> {
-                BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-                responseDTO.setBorrowId(borrowRecord.getBorrowId());
-                responseDTO.setBorrowDate(borrowRecord.getBorrowDate());
-                responseDTO.setBookName(borrowRecord.getBook().getTitle());
-                responseDTO.setStatus(borrowRecord.getStatus());
-                responseDTO.setDueDate(borrowRecord.getDueDate());
-                responseDTO.setMemberName(borrowRecord.getMember().getMemberName());
-                responseDTO.setReturnDate(borrowRecord.getReturnDate());
+                BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(borrowRecord);
                 return responseDTO;
             }).toList();
 
@@ -60,23 +52,9 @@ public class BorrowController {
     @PostMapping
     public ResponseEntity<BorrowRecordResponseDTO> createBorrowRecord(@Valid @RequestBody BorrowRecordRequestDTO recordRequestDTO)
     {
-            BorrowRecord record=new BorrowRecord();
-
-            record.setMember(memberServices.getMemberById(recordRequestDTO.getMemberId()));
-            record.setBook(bookServices.getBookByID(recordRequestDTO.getBookId()));
-            record.setReturnDate(recordRequestDTO.getReturnDate());
-            record.setBorrowDate(recordRequestDTO.getBorrowDate());
-            record.setStatus(recordRequestDTO.getStatus());
-            record.setDueDate(recordRequestDTO.getDueDate());
+            BorrowRecord record=borrowMapper.toEntity(recordRequestDTO);
             BorrowRecord created=borrowServices.createBorrowRecord(record);
-            BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-            responseDTO.setBorrowId(created.getBorrowId());
-            responseDTO.setBorrowDate(created.getBorrowDate());
-            responseDTO.setBookName(created.getBook().getTitle());
-            responseDTO.setStatus(created.getStatus());
-            responseDTO.setDueDate(created.getDueDate());
-            responseDTO.setMemberName(created.getMember().getMemberName());
-            responseDTO.setReturnDate(created.getReturnDate());
+            BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(created)
             log.info("POST/borrowrecord: Borrow record created with this id: {}",responseDTO.getBorrowId());
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
@@ -94,25 +72,10 @@ public class BorrowController {
 
     @PutMapping("id/{id}")
     public ResponseEntity<?> updateBorrowRecord(@PathVariable long id,@Valid @RequestBody BorrowRecordRequestDTO recordRequestDTO)
-    {   BorrowRecord borrowRecord=new BorrowRecord();
-
-        borrowRecord.setBorrowDate(recordRequestDTO.getBorrowDate());
-        borrowRecord.setMember(memberServices.getMemberById(recordRequestDTO.getMemberId()));
-        borrowRecord.setBook(bookServices.getBookByID(recordRequestDTO.getBookId()));
-        borrowRecord.setStatus(recordRequestDTO.getStatus());
-        borrowRecord.setReturnDate(recordRequestDTO.getReturnDate());
-        borrowRecord.setDueDate(recordRequestDTO.getDueDate());
+    {   BorrowRecord borrowRecord=borrowMapper.toEntity(recordRequestDTO);
         BorrowRecord updated=borrowServices.updateRecord(id,borrowRecord);
 
-        BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-        responseDTO.setBorrowId(updated.getBorrowId());
-        responseDTO.setBorrowDate(updated.getBorrowDate());
-        responseDTO.setStatus(updated.getStatus());
-        responseDTO.setBookName(updated.getBook().getTitle());
-        responseDTO.setMemberName(updated.getMember().getMemberName());
-        responseDTO.setDueDate(updated.getDueDate());
-        responseDTO.setReturnDate(updated.getReturnDate());
-
+        BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(updated);
             log.info("PUT/borrowrecord/id/{}: Borrow record updated for this id: {}",id);
             return ResponseEntity.ok(responseDTO);
 
@@ -122,14 +85,7 @@ public class BorrowController {
     public ResponseEntity<?> getBorrowRecordById(@PathVariable long id)
     {
             BorrowRecord record=borrowServices.getRecordById(id);
-            BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-            responseDTO.setBorrowId(record.getBorrowId());
-            responseDTO.setBorrowDate(record.getBorrowDate());
-            responseDTO.setStatus(record.getStatus());
-            responseDTO.setBookName(record.getBook().getTitle());
-            responseDTO.setMemberName(record.getMember().getMemberName());
-            responseDTO.setDueDate(record.getDueDate());
-            responseDTO.setReturnDate(record.getReturnDate());
+            BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(record);
             log.info("GET/borrowrecord/id/{id}: Book found for this id: {}",id);
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
@@ -139,14 +95,7 @@ public class BorrowController {
     public ResponseEntity<?> returnBook(@PathVariable long id)
     {
             BorrowRecord record=borrowServices.returnBook(id);
-            BorrowRecordResponseDTO responseDTO=new BorrowRecordResponseDTO();
-            responseDTO.setBorrowId(record.getBorrowId());
-            responseDTO.setBookName(record.getBook().getTitle());
-            responseDTO.setBorrowDate(record.getBorrowDate());
-            responseDTO.setStatus(record.getStatus());
-            responseDTO.setMemberName(record.getMember().getMemberName());
-            responseDTO.setReturnDate(record.getReturnDate());
-            responseDTO.setDueDate(record.getDueDate());
+            BorrowRecordResponseDTO responseDTO=borrowMapper.toResponseDTO(record);
             log.info("PUT/id/{}/return : Book returned",id);
             return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
