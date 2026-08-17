@@ -10,6 +10,7 @@ import pk.edu.niit.library_management_system.ExceptionHandler.MemberNotFoundExce
 import pk.edu.niit.library_management_system.Member.DTO.MemberRequestDTO;
 import pk.edu.niit.library_management_system.Member.DTO.MemberResponseDTO;
 import pk.edu.niit.library_management_system.Member.Entity.Member;
+import pk.edu.niit.library_management_system.Member.Mapper.MemberMapper;
 import pk.edu.niit.library_management_system.Member.Services.MemberServices;
 
 import java.util.List;
@@ -21,7 +22,8 @@ import java.util.Optional;
 public class MemberController {
     @Autowired
     private MemberServices memberServices;
-
+    @Autowired
+    private MemberMapper memberMapper;
     @GetMapping
     public ResponseEntity<List<MemberResponseDTO>> getAllMembers()
     {
@@ -31,11 +33,7 @@ public class MemberController {
                 throw new MemberNotFoundException("GET/member: Members not found");
             }
             List<MemberResponseDTO> responseDTOS=members.stream().map(member -> {
-                MemberResponseDTO responseDTO=new MemberResponseDTO();
-                responseDTO.setMemberId(member.getMemberId());
-                responseDTO.setMemberName(member.getMemberName());
-                responseDTO.setEmail(member.getEmail());
-                responseDTO.setMembershipDate(member.getMembershipDate());
+                MemberResponseDTO responseDTO=memberMapper.toResponseDTO(member);
                 return responseDTO;
             }).toList();
             log.info("GET/member: {} Members found: ",responseDTOS.size());
@@ -45,16 +43,9 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberResponseDTO> createMember(@Valid @RequestBody MemberRequestDTO requestDTO)
     {
-            Member member=new Member();
-            member.setMemberName(requestDTO.getMemberName());
-            member.setEmail(requestDTO.getEmail());
-            member.setMembershipDate(requestDTO.getMembershipDate());
+            Member member=memberMapper.toEntity(requestDTO);
             Member created=memberServices.createMember(member);
-            MemberResponseDTO responseDTO=new MemberResponseDTO();
-            responseDTO.setMemberId(created.getMemberId());
-            responseDTO.setMemberName(created.getMemberName());
-            responseDTO.setMembershipDate(created.getMembershipDate());
-            responseDTO.setEmail(created.getEmail());
+            MemberResponseDTO responseDTO=memberMapper.toResponseDTO(created);
             log.info("POST/member : Member created for this id: {}",responseDTO.getMemberId());
             return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
 
@@ -72,16 +63,9 @@ public class MemberController {
     @PutMapping("id/{id}")
     public ResponseEntity<MemberResponseDTO> updateMember(@PathVariable long id,@Valid @RequestBody MemberRequestDTO memberRequestDTO)
     {
-            Member member=new Member();
-            member.setMemberName(memberRequestDTO.getMemberName());
-            member.setMembershipDate(memberRequestDTO.getMembershipDate());
-            member.setEmail(memberRequestDTO.getEmail());
+            Member member=memberMapper.toEntity(memberRequestDTO);
             Member updated=memberServices.updateMember(id,member);
-            MemberResponseDTO responseDTO=new MemberResponseDTO();
-            responseDTO.setMemberId(updated.getMemberId());
-            responseDTO.setMemberName(updated.getMemberName());
-            responseDTO.setEmail(updated.getEmail());
-            responseDTO.setMembershipDate(updated.getMembershipDate());
+            MemberResponseDTO responseDTO=memberMapper.toResponseDTO(updated);
 
             log.info("PUT/member/id/{}: Member updated for this id: {}",id);
             return ResponseEntity.ok(responseDTO);
@@ -92,11 +76,7 @@ public class MemberController {
     {
 
             Member member=memberServices.getMemberById(id);
-            MemberResponseDTO responseDTO=new MemberResponseDTO();
-            responseDTO.setMemberId(member.getMemberId());
-            responseDTO.setMemberName(member.getMemberName());
-            responseDTO.setEmail(member.getEmail());
-            responseDTO.setMembershipDate(member.getMembershipDate());
+            MemberResponseDTO responseDTO=memberMapper.toResponseDTO(member);
             log.info("GET/member/id/{}: Member found for this id :{}",id);
             return ResponseEntity.ok(responseDTO);
 
