@@ -1,9 +1,11 @@
 package pk.edu.niit.library_management_system.User.Entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import pk.edu.niit.library_management_system.User.Util.Role;
 
 @Entity
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
