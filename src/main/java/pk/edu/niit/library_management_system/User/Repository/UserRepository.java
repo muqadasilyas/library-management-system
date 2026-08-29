@@ -7,7 +7,7 @@ import pk.edu.niit.library_management_system.User.Entity.User;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<Long, User> {
+public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
 
