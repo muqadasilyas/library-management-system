@@ -77,11 +77,11 @@ public class BookController {
     @GetMapping("id/{id}")
     public ResponseEntity<BookResponseDTO> getBookById(@PathVariable long id)
     {
-            Book book=bookServices.getBookByID(id);
-            BookResponseDTO responseDTO=bookMapper.toResponseDTO(book);
+        Book book=bookServices.getBookByID(id);
+        BookResponseDTO responseDTO=bookMapper.toResponseDTO(book);
 
-            log.info("GET/id/{}: Book found for this id {}",id);
-            return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
+        log.info("GET/id/{}: Book found for this id {}",id);
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
 
     }
 
