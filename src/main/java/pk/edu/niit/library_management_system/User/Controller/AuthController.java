@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pk.edu.niit.library_management_system.User.DTO.LoginRequest;
 import pk.edu.niit.library_management_system.User.DTO.RegisterRequest;
 import pk.edu.niit.library_management_system.User.Service.AuthService;
 
@@ -25,5 +26,13 @@ public class AuthController {
         log.info("POST/auth/register: User registered");
         return ResponseEntity.ok("User registered successfully");
 
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest loginRequest)
+    {
+        authService.login(loginRequest);
+        log.info("POST/auth/login: User logged in");
+        return ResponseEntity.ok("User logged in successfully");
     }
 }

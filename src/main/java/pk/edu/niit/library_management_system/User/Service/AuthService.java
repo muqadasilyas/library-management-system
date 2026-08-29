@@ -1,9 +1,12 @@
 package pk.edu.niit.library_management_system.User.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pk.edu.niit.library_management_system.ExceptionHandler.UsernameAlreadyExistsException;
+import pk.edu.niit.library_management_system.User.DTO.LoginRequest;
 import pk.edu.niit.library_management_system.User.DTO.RegisterRequest;
 import pk.edu.niit.library_management_system.User.Entity.User;
 import pk.edu.niit.library_management_system.User.Repository.UserRepository;
@@ -12,9 +15,11 @@ import pk.edu.niit.library_management_system.User.Util.Role;
 @Service
 public class AuthService {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public void register(RegisterRequest registerRequest)
     {
@@ -28,5 +33,15 @@ public class AuthService {
         user.setRole(Role.MEMBER);
         userRepository.save(user);
 
+    }
+
+    public void login(LoginRequest request)
+    {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getUserName(),
+                        request.getPassword()
+                )
+        );
     }
 }
