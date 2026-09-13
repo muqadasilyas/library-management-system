@@ -25,7 +25,7 @@ public class AuthService {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private JwtService jwtService;
+    private JWTService jwtService;
 
     public void register(RegisterRequest registerRequest)
     {
