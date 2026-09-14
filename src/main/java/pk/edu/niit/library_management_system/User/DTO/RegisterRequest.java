@@ -12,6 +12,5 @@ public class RegisterRequest {
     @NotBlank(message = "Password must not be blank")
     @Size(min = 6,max = 20,message =" Size of password should be between 6 and 20" )
     private String password;
-    @NotBlank
-    private String role;
+
 }

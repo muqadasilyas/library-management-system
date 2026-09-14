@@ -3,6 +3,7 @@ package pk.edu.niit.library_management_system.Config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,6 +26,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth->auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/book","/book/**").
+                        hasAnyRole("ADMIN","MEMBER")
+                        .requestMatchers(HttpMethod.POST,"/book","/book/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/book","/book/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/book","/book/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
