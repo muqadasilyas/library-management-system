@@ -36,6 +36,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/author","/author/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/author","/author/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/author","/author/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/member","/member/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/member","/member/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/member","/member/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/member","/member/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class);
