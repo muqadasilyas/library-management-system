@@ -134,12 +134,6 @@ src/main/java/pk/edu/niit/library_management_system/
 | PUT | `/borrowrecord/id/{id}/return` | Mark a book as returned |
 | DELETE | `/borrowrecord/id/{id}` | Delete a record |
 
-## 🗺️ Roadmap
-
-- [ ] Move JWT secret and DB credentials to environment variables
-- [ ] Add refresh token support
-- [ ] Add unit and integration tests for services and controllers
-- [ ] Add pagination to list endpoints
 
 ## 👤 Author
 
